@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'linux && java11 || java17 || java21'
+            label 'linux && (java11 || java17 || java21)'
         }
     }
 
@@ -14,7 +14,9 @@ pipeline {
                         sleep 1
                     }
                 }
+
                 echo 'Start cleaning...'
+                sh 'chmod +x mvnw'
                 sh './mvnw clean'
                 echo 'Finish cleaning...'
                 echo 'Clean completed...'
@@ -25,7 +27,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Start testing...'
-                sh './mvnw compile test-compile'
+                sh './mvnw test'
                 echo 'Finish testing...'
                 echo 'Test completed...'
                 sleep 2
@@ -35,46 +37,51 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Start deploying...'
+                sleep 2
                 echo 'Finish deploying...'
                 echo 'Deploy completed...'
-                sleep 2
             }
         }
 
         stage('Release') {
             steps {
                 echo 'Start releasing...'
+                sleep 2
                 echo 'Finish releasing...'
                 echo 'Release completed...'
-                sleep 2
             }
         }
-        
+
         stage('Cleanup') {
             steps {
                 echo 'Cleaning up 1...'
                 echo 'Cleaning up 2...'
-
             }
         }
     }
+
     post {
         always {
             echo 'This will always run'
         }
+
         success {
             echo 'This will run only if successful'
         }
+
         failure {
             echo 'This will run only if failed'
         }
+
         unstable {
             echo 'This will run only if the run was marked as unstable'
         }
+
         changed {
             echo 'This will run only if the state of the Pipeline has changed'
             echo 'For example, if the Pipeline was previously failing but is now successful'
         }
+
         cleanup {
             echo 'This will always run, even if the Pipeline was aborted'
         }
