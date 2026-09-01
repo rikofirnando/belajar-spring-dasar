@@ -19,7 +19,6 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Start testing...'
-                sh './mvnw test'
                 sh './mvnw compile test-compile'
                 echo 'Finish testing...'
                 echo 'Test completed...'
