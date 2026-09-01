@@ -6,6 +6,7 @@ pipeline {
             agent {
                 label 'linux && (java11 || java17 || java21)'
             }
+
             steps {
                 script {
                     for (int i = 0; i < 5; i++) {
@@ -24,6 +25,7 @@ pipeline {
         }
 
         stage('Test') {
+
             steps {
                 script {
                     def data = [
@@ -52,6 +54,7 @@ pipeline {
             agent {
                 label 'linux && (java11 || java17 || java21)'
             }
+
             steps {
                 echo 'Start deploying...'
                 sleep 2
@@ -61,6 +64,7 @@ pipeline {
         }
 
         stage('Release') {
+
             steps {
                 echo 'Start releasing...'
                 sleep 2
@@ -70,6 +74,10 @@ pipeline {
         }
 
         stage('Cleanup') {
+            agent {
+                label 'linux && (java11 || java17 || java21)'
+            }
+
             steps {
                 echo 'Cleaning up 1...'
                 echo 'Cleaning up 2...'
@@ -96,7 +104,6 @@ pipeline {
 
         changed {
             echo 'This will run only if the state of the Pipeline has changed'
-            echo 'For example, if the Pipeline was previously failing but is now successful'
         }
 
         cleanup {
