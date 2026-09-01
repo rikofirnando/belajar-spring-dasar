@@ -26,6 +26,16 @@ pipeline {
 
         stage('Test') {
             steps {
+                script {
+                    def data = [
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "age": 30
+                    ]
+
+                    writeFile file: 'data.json', text: groovy.json.JsonOutput.toJson(data)
+                    }
+                }
                 echo 'Start testing...'
                 sh './mvnw test'
                 echo 'Finish testing...'
