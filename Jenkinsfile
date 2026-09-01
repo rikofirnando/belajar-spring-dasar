@@ -8,6 +8,9 @@ pipeline {
     stages {
         stage('Clean') {
             steps {
+                for {int i = 0; i < 15; i++} {
+                    echo "Cleaning up ${i + 1}..."
+                }
                 echo 'Start cleaning...'
                 sh './mvnw clean'
                 echo 'Finish cleaning...'
