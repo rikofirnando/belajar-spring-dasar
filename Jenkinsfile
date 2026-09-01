@@ -1,12 +1,11 @@
 pipeline {
-    agent {
-        node {
-            label 'linux && (java11 || java17 || java21)'
-        }
-    }
+    agent none
 
     stages {
         stage('Clean') {
+            agent {
+                label 'linux && (java11 || java17 || java21)'
+            }
             steps {
                 script {
                     for (int i = 0; i < 5; i++) {
@@ -50,6 +49,9 @@ pipeline {
         }
 
         stage('Deploy') {
+            agent {
+                label 'linux && (java11 || java17 || java21)'
+            }
             steps {
                 echo 'Start deploying...'
                 sleep 2
