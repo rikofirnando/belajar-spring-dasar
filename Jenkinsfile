@@ -9,8 +9,9 @@ pipeline {
         stage('Clean') {
             steps {
                 script {
-                    for {int i = 0; i < 15; i++} {
-                        echo "Cleaning up ${i + 1}..."
+                    for (int i = 0; i < 5; i++) {
+                        echo "Cleaning up... ${i + 1}"
+                        sleep 1
                     }
                 }
                 echo 'Start cleaning...'
