@@ -6,39 +6,42 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
+        stage('Clean') {
             steps {
-                echo 'Building 1...'
-                echo 'Building 2...'
-                sleep 3
-                echo 'Building 3...'
+                echo 'Start cleaning...'
+                sh './mvnw clean'
+                echo 'Finish cleaning...'
+                echo 'Clean completed...'
+                sleep 2
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Testing 1...'
-                echo 'Testing 2...'
-                sleep 3
-                echo 'Testing 3...'
+                echo 'Start testing...'
+                sh './mvnw test'
+                sh './mvnw compile test-compile'
+                echo 'Finish testing...'
+                echo 'Test completed...'
+                sleep 2
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying 1...'
-                echo 'Deploying 2...'
-                sleep 3
-                echo 'Deploying 3...'
+                echo 'Start deploying...'
+                echo 'Finish deploying...'
+                echo 'Deploy completed...'
+                sleep 2
             }
         }
 
         stage('Release') {
             steps {
-                echo 'Releasing 1...'
-                echo 'Releasing 2...'
-                sleep 3
-                echo 'Releasing 3...'
+                echo 'Start releasing...'
+                echo 'Finish releasing...'
+                echo 'Release completed...'
+                sleep 2
             }
         }
         
@@ -46,8 +49,7 @@ pipeline {
             steps {
                 echo 'Cleaning up 1...'
                 echo 'Cleaning up 2...'
-                sleep 3
-                echo 'Cleaning up 3...'
+
             }
         }
     }
