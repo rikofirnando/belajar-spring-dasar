@@ -28,14 +28,19 @@ pipeline {
             steps {
                 script {
                     def data = [
-                        "firstName": "John",
-                        "lastName": "Doe",
-                        "age": 30
+                        firstName: 'John',
+                        lastName : 'Doe',
+                        age      : 30
                     ]
 
-                    writeFile file: 'data.json', text: groovy.json.JsonOutput.toJson(data)
-                    }
+                    writeFile(
+                        file: 'data.json',
+                        text: groovy.json.JsonOutput.toJson(data)
+                    )
+
+                    echo 'data.json berhasil dibuat'
                 }
+
                 echo 'Start testing...'
                 sh './mvnw test'
                 echo 'Finish testing...'
