@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clean') {
             agent {
-                label 'linux && (java11 || java17 || java21)'
+                label 'jenkins-agent-01'
             }
 
             steps {
@@ -15,16 +15,16 @@ pipeline {
                     }
                 }
 
-                echo 'Start cleaning...'
+                echo "Running on: ${env.NODE_NAME}"
                 sh 'chmod +x mvnw'
                 sh './mvnw clean'
-                echo 'Finish cleaning...'
-                echo 'Clean completed...'
-                sleep 2
             }
         }
 
         stage('Test') {
+            agent {
+                label 'jenkins-agent-01'
+            }
 
             steps {
                 script {
@@ -42,43 +42,44 @@ pipeline {
                     echo 'data.json berhasil dibuat'
                 }
 
-                echo 'Start testing...'
+                echo "Running on: ${env.NODE_NAME}"
                 sh './mvnw test'
-                echo 'Finish testing...'
-                echo 'Test completed...'
-                sleep 2
             }
         }
 
         stage('Deploy') {
             agent {
-                label 'linux && (java11 || java17 || java21)'
+                label 'jenkins-agent-01'
             }
 
             steps {
+                echo "Deploy running on: ${env.NODE_NAME}"
                 echo 'Start deploying...'
                 sleep 2
-                echo 'Finish deploying...'
                 echo 'Deploy completed...'
             }
         }
 
         stage('Release') {
+            agent {
+                label 'jenkins-agent-01'
+            }
 
             steps {
+                echo "Release running on: ${env.NODE_NAME}"
                 echo 'Start releasing...'
                 sleep 2
-                echo 'Finish releasing...'
                 echo 'Release completed...'
             }
         }
 
         stage('Cleanup') {
             agent {
-                label 'linux && (java11 || java17 || java21)'
+                label 'jenkins-agent-01'
             }
 
             steps {
+                echo "Cleanup running on: ${env.NODE_NAME}"
                 echo 'Cleaning up 1...'
                 echo 'Cleaning up 2...'
             }
@@ -87,27 +88,19 @@ pipeline {
 
     post {
         always {
-            echo 'This will always run'
+            echo "Pipeline selesai di node: ${env.NODE_NAME}"
         }
 
         success {
-            echo 'This will run only if successful'
+            echo 'Pipeline berhasil'
         }
 
         failure {
-            echo 'This will run only if failed'
-        }
-
-        unstable {
-            echo 'This will run only if the run was marked as unstable'
-        }
-
-        changed {
-            echo 'This will run only if the state of the Pipeline has changed'
+            echo 'Pipeline gagal'
         }
 
         cleanup {
-            echo 'This will always run, even if the Pipeline was aborted'
+            echo 'Post cleanup selesai'
         }
     }
 }
