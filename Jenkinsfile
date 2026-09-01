@@ -1,10 +1,30 @@
 pipeline {
     agent none
 
+    environment {
+        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
+        PATH+JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64/bin'
+    }
+
     stages {
+        stage('Check Java') {
+            agent {
+                label 'linux-java11'
+            }
+
+            steps {
+                sh '''
+                    echo "JAVA_HOME=$JAVA_HOME"
+                    echo "PATH=$PATH"
+                    java -version
+                    ./mvnw -version
+                '''
+            }
+        }
+
         stage('Clean') {
             agent {
-                label 'jenkins-agent-01'
+                label 'linux-java11'
             }
 
             steps {
@@ -15,15 +35,17 @@ pipeline {
                     }
                 }
 
-                echo "Running on: ${env.NODE_NAME}"
-                sh 'chmod +x mvnw'
-                sh './mvnw clean'
+                sh '''
+                    echo "Using JAVA_HOME=$JAVA_HOME"
+                    chmod +x mvnw
+                    ./mvnw clean
+                '''
             }
         }
 
         stage('Test') {
             agent {
-                label 'jenkins-agent-01'
+                label 'linux-java11'
             }
 
             steps {
@@ -42,44 +64,45 @@ pipeline {
                     echo 'data.json berhasil dibuat'
                 }
 
-                echo "Running on: ${env.NODE_NAME}"
                 sh './mvnw test'
             }
         }
 
         stage('Deploy') {
             agent {
-                label 'jenkins-agent-01'
+                label 'linux-java11'
             }
 
             steps {
-                echo "Deploy running on: ${env.NODE_NAME}"
+                echo "Deploy berjalan di node: ${env.NODE_NAME}"
                 echo 'Start deploying...'
                 sleep 2
+                echo 'Finish deploying...'
                 echo 'Deploy completed...'
             }
         }
 
         stage('Release') {
             agent {
-                label 'jenkins-agent-01'
+                label 'linux-java11'
             }
 
             steps {
-                echo "Release running on: ${env.NODE_NAME}"
+                echo "Release berjalan di node: ${env.NODE_NAME}"
                 echo 'Start releasing...'
                 sleep 2
+                echo 'Finish releasing...'
                 echo 'Release completed...'
             }
         }
 
         stage('Cleanup') {
             agent {
-                label 'jenkins-agent-01'
+                label 'linux-java11'
             }
 
             steps {
-                echo "Cleanup running on: ${env.NODE_NAME}"
+                echo "Cleanup berjalan di node: ${env.NODE_NAME}"
                 echo 'Cleaning up 1...'
                 echo 'Cleaning up 2...'
             }
@@ -88,7 +111,7 @@ pipeline {
 
     post {
         always {
-            echo "Pipeline selesai di node: ${env.NODE_NAME}"
+            echo 'This will always run'
         }
 
         success {
