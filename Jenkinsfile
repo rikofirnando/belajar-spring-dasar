@@ -3,13 +3,13 @@ pipeline {
 
     environment {
         JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
-        PATH+JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64/bin'
+        PATH = "/usr/lib/jvm/java-11-openjdk-amd64/bin:${env.PATH}"
     }
 
     stages {
         stage('Check Java') {
             agent {
-                label 'linux-java11'
+                label 'jenkins-agent-01'
             }
 
             steps {
@@ -24,7 +24,7 @@ pipeline {
 
         stage('Clean') {
             agent {
-                label 'linux-java11'
+                label 'jenkins-agent-01'
             }
 
             steps {
@@ -36,7 +36,6 @@ pipeline {
                 }
 
                 sh '''
-                    echo "Using JAVA_HOME=$JAVA_HOME"
                     chmod +x mvnw
                     ./mvnw clean
                 '''
@@ -45,7 +44,7 @@ pipeline {
 
         stage('Test') {
             agent {
-                label 'linux-java11'
+                label 'jenkins-agent-01'
             }
 
             steps {
@@ -60,8 +59,6 @@ pipeline {
                         file: 'data.json',
                         text: groovy.json.JsonOutput.toJson(data)
                     )
-
-                    echo 'data.json berhasil dibuat'
                 }
 
                 sh './mvnw test'
@@ -70,39 +67,34 @@ pipeline {
 
         stage('Deploy') {
             agent {
-                label 'linux-java11'
+                label 'jenkins-agent-01'
             }
 
             steps {
-                echo "Deploy berjalan di node: ${env.NODE_NAME}"
                 echo 'Start deploying...'
                 sleep 2
-                echo 'Finish deploying...'
                 echo 'Deploy completed...'
             }
         }
 
         stage('Release') {
             agent {
-                label 'linux-java11'
+                label 'jenkins-agent-01'
             }
 
             steps {
-                echo "Release berjalan di node: ${env.NODE_NAME}"
                 echo 'Start releasing...'
                 sleep 2
-                echo 'Finish releasing...'
                 echo 'Release completed...'
             }
         }
 
         stage('Cleanup') {
             agent {
-                label 'linux-java11'
+                label 'jenkins-agent-01'
             }
 
             steps {
-                echo "Cleanup berjalan di node: ${env.NODE_NAME}"
                 echo 'Cleaning up 1...'
                 echo 'Cleaning up 2...'
             }
