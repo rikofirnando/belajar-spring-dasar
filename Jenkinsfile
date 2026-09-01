@@ -10,6 +10,7 @@ pipeline {
             steps {
                 echo 'Building 1...'
                 echo 'Building 2...'
+                sleep 3
                 echo 'Building 3...'
             }
         }
@@ -18,6 +19,7 @@ pipeline {
             steps {
                 echo 'Testing 1...'
                 echo 'Testing 2...'
+                sleep 3
                 echo 'Testing 3...'
             }
         }
@@ -26,19 +28,26 @@ pipeline {
             steps {
                 echo 'Deploying 1...'
                 echo 'Deploying 2...'
+                sleep 3
                 echo 'Deploying 3...'
             }
         }
 
         stage('Release') {
             steps {
-                echo 'Releasing...'
+                echo 'Releasing 1...'
+                echo 'Releasing 2...'
+                sleep 3
+                echo 'Releasing 3...'
             }
         }
         
         stage('Cleanup') {
             steps {
-                echo 'Cleaning up...'
+                echo 'Cleaning up 1...'
+                echo 'Cleaning up 2...'
+                sleep 3
+                echo 'Cleaning up 3...'
             }
         }
     }
