@@ -1,40 +1,37 @@
 pipeline {
-    /*
-     * Tidak ada Agent global.
-     * Setiap stage menentukan Agent masing-masing.
-     */
     agent none
+
+    options {
+        skipDefaultCheckout(true)
+        disableConcurrentBuilds()
+        timeout(time: 30, unit: 'MINUTES')
+    }
 
     environment {
         JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
         PATH = "/usr/lib/jvm/java-11-openjdk-amd64/bin:${env.PATH}"
     }
 
-    options {
-        timestamps()
-        timeout(time: 30, unit: 'MINUTES')
-        disableConcurrentBuilds()
-        buildDiscarder(logRotator(numToKeepStr: '10'))
-    }
-
     stages {
         stage('Check Java') {
             agent {
-                label 'jenkins-agent-01'
+                node {
+                    label 'jenkins-agent-01'
+                    customWorkspace '/home/rikofirnando/Jenkins/workspace/learn-jenkins-pipeline-scm'
+                }
             }
 
             steps {
+                checkout scm
+
                 script {
-                    echo "Start Job: ${env.JOB_NAME}"
+                    echo "Start Job    : ${env.JOB_NAME}"
                     echo "Build Number: ${env.BUILD_NUMBER}"
-                    echo "Branch Name: ${env.BRANCH_NAME}"
-                    echo "--------------------------------"
-                    echo "Node Jenkins : ${env.NODE_NAME}"
-                    echo "Label Node   : ${env.NODE_LABELS}"
-                    echo "Workspace    : ${pwd()}"
-                    echo "/bin/sh tersedia : ${fileExists('/bin/sh')}"
-                    echo "mvnw tersedia    : ${fileExists('mvnw')}"
-                    echo "pom.xml tersedia : ${fileExists('pom.xml')}"
+                    echo "Node Jenkins: ${env.NODE_NAME}"
+                    echo "Label Node  : ${env.NODE_LABELS}"
+                    echo "Workspace   : ${pwd()}"
+                    echo "mvnw ada    : ${fileExists('mvnw')}"
+                    echo "pom.xml ada : ${fileExists('pom.xml')}"
                 }
 
                 timeout(time: 5, unit: 'MINUTES') {
@@ -43,27 +40,22 @@ pipeline {
                         script: '''
                             set -eux
 
-                            echo "===== INFORMASI AGENT ====="
-                            echo "User      : $(whoami)"
-                            echo "Hostname  : $(hostname)"
-                            echo "Workspace : $(pwd)"
-                            echo "Shell     : $(command -v sh)"
-                            echo "Nohup     : $(command -v nohup)"
-
-                            echo "===== WORKSPACE ====="
-                            ls -ld .
-                            df -h .
-                            findmnt -T "$(pwd)" || true
-
-                            echo "===== JAVA ====="
+                            echo "Agent berhasil menjalankan shell"
                             echo "JAVA_HOME=$JAVA_HOME"
                             echo "PATH=$PATH"
+
+                            hostname
+                            whoami
+                            pwd
+
+                            command -v sh
+                            command -v nohup
+                            command -v java
+
                             java -version
 
-                            echo "===== MAVEN WRAPPER ====="
-                            test -f mvnw
                             chmod +x mvnw
-                            ./mvnw --version
+                            ./mvnw -version
                         '''
                     )
                 }
@@ -72,17 +64,17 @@ pipeline {
 
         stage('Clean') {
             agent {
-                label 'jenkins-agent-01'
+                node {
+                    label 'jenkins-agent-01'
+                    customWorkspace '/home/rikofirnando/Jenkins/workspace/learn-jenkins-pipeline-scm'
+                }
             }
 
             steps {
                 script {
-                    echo "Clean berjalan pada node: ${env.NODE_NAME}"
-                    echo "Workspace: ${pwd()}"
-
-                    for (int i = 1; i <= 5; i++) {
-                        echo "Cleaning up... ${i}/5"
-                        sleep(time: 1, unit: 'SECONDS')
+                    for (int i = 0; i < 5; i++) {
+                        echo "Cleaning up... ${i + 1}"
+                        sleep 1
                     }
                 }
 
@@ -91,13 +83,8 @@ pipeline {
                         label: 'Maven Clean',
                         script: '''
                             set -eux
-
                             chmod +x mvnw
-
-                            ./mvnw \
-                                --batch-mode \
-                                --no-transfer-progress \
-                                clean
+                            ./mvnw clean
                         '''
                     )
                 }
@@ -106,14 +93,14 @@ pipeline {
 
         stage('Test') {
             agent {
-                label 'jenkins-agent-01'
+                node {
+                    label 'jenkins-agent-01'
+                    customWorkspace '/home/rikofirnando/Jenkins/workspace/learn-jenkins-pipeline-scm'
+                }
             }
 
             steps {
                 script {
-                    echo "Test berjalan pada node: ${env.NODE_NAME}"
-                    echo "Workspace: ${pwd()}"
-
                     def data = [
                         firstName: 'John',
                         lastName : 'Doe',
@@ -126,42 +113,16 @@ pipeline {
                             groovy.json.JsonOutput.toJson(data)
                         )
                     )
-
-                    echo 'File data.json berhasil dibuat'
                 }
 
-                timeout(time: 15, unit: 'MINUTES') {
+                timeout(time: 10, unit: 'MINUTES') {
                     sh(
                         label: 'Maven Test',
                         script: '''
                             set -eux
-
                             chmod +x mvnw
-
-                            echo "Maven test dimulai"
-
-                            ./mvnw \
-                                --batch-mode \
-                                --no-transfer-progress \
-                                test
-
-                            echo "Maven test selesai"
+                            ./mvnw test
                         '''
-                    )
-                }
-            }
-
-            post {
-                always {
-                    junit(
-                        testResults: '**/target/surefire-reports/*.xml',
-                        allowEmptyResults: true
-                    )
-
-                    archiveArtifacts(
-                        artifacts: 'data.json, **/target/surefire-reports/**',
-                        allowEmptyArchive: true,
-                        fingerprint: true
                     )
                 }
             }
@@ -169,56 +130,49 @@ pipeline {
 
         stage('Deploy') {
             agent {
-                label 'jenkins-agent-01'
+                node {
+                    label 'jenkins-agent-01'
+                    customWorkspace '/home/rikofirnando/Jenkins/workspace/learn-jenkins-pipeline-scm'
+                }
             }
 
             steps {
-                echo "Deploy berjalan pada node: ${env.NODE_NAME}"
-                echo "Workspace: ${pwd()}"
-
                 echo 'Start deploying...'
-                sleep(time: 2, unit: 'SECONDS')
+                sleep 2
                 echo 'Deploy completed...'
             }
         }
 
         stage('Release') {
             agent {
-                label 'jenkins-agent-01'
+                node {
+                    label 'jenkins-agent-01'
+                    customWorkspace '/home/rikofirnando/Jenkins/workspace/learn-jenkins-pipeline-scm'
+                }
             }
 
             steps {
-                echo "Release berjalan pada node: ${env.NODE_NAME}"
-                echo "Workspace: ${pwd()}"
-
                 echo 'Start releasing...'
-                sleep(time: 2, unit: 'SECONDS')
+                sleep 2
                 echo 'Release completed...'
             }
         }
 
         stage('Cleanup') {
             agent {
-                label 'jenkins-agent-01'
+                node {
+                    label 'jenkins-agent-01'
+                    customWorkspace '/home/rikofirnando/Jenkins/workspace/learn-jenkins-pipeline-scm'
+                }
             }
 
             steps {
-                echo "Cleanup berjalan pada node: ${env.NODE_NAME}"
-                echo "Workspace: ${pwd()}"
-
                 echo 'Cleaning up 1...'
                 echo 'Cleaning up 2...'
             }
         }
     }
 
-    /*
-     * Karena Pipeline menggunakan agent none, bagian post global
-     * tidak mempunyai node/workspace secara otomatis.
-     *
-     * Jadi gunakan post global hanya untuk langkah yang tidak
-     * membutuhkan workspace, seperti echo.
-     */
     post {
         always {
             echo 'This will always run'
@@ -227,10 +181,6 @@ pipeline {
 
         success {
             echo 'Pipeline berhasil'
-        }
-
-        unstable {
-            echo 'Pipeline berstatus UNSTABLE'
         }
 
         failure {
