@@ -12,15 +12,51 @@ pipeline {
             }
 
             steps {
-                echo 'Checking Java and Maven...'
+                script {
+                    echo '========================================'
+                    echo 'INFORMASI GLOBAL VARIABLE JENKINS'
+                    echo '========================================'
+
+                    echo "Start Job     : ${env.JOB_NAME}"
+                    echo "Build Number  : ${env.BUILD_NUMBER}"
+                    echo "Build ID      : ${env.BUILD_ID}"
+                    echo "Build Tag     : ${env.BUILD_TAG}"
+
+                    echo '----------------------------------------'
+
+                    echo "Node Jenkins  : ${env.NODE_NAME}"
+                    echo "Label Node    : ${env.NODE_LABELS}"
+                    echo "Workspace     : ${pwd()}"
+
+                    echo '----------------------------------------'
+
+                    echo "Branch Name   : ${env.GIT_BRANCH ?: env.BRANCH_NAME ?: 'Tidak tersedia'}"
+                    echo "Git Commit    : ${env.GIT_COMMIT ?: 'Tidak tersedia'}"
+
+                    echo '----------------------------------------'
+
+                    echo "Jenkins URL   : ${env.JENKINS_URL ?: 'Tidak tersedia'}"
+                    echo "Job URL       : ${env.JOB_URL ?: 'Tidak tersedia'}"
+                    echo "Build URL     : ${env.BUILD_URL ?: 'Tidak tersedia'}"
+
+                    echo '----------------------------------------'
+
+                    echo "JAVA_HOME     : ${env.JAVA_HOME}"
+                    echo "mvnw tersedia : ${fileExists('mvnw')}"
+                    echo "pom.xml ada   : ${fileExists('pom.xml')}"
+
+                    echo '========================================'
+                }
 
                 sh '''
-                    echo "JAVA_HOME=$JAVA_HOME"
-                    echo "PATH=$PATH"
+                    echo "Checking Java and Maven..."
 
                     hostname
                     whoami
                     pwd
+
+                    echo "JAVA_HOME=$JAVA_HOME"
+                    echo "PATH=$PATH"
 
                     chmod +x mvnw
 
@@ -65,8 +101,12 @@ pipeline {
 
                     writeFile(
                         file: 'data.json',
-                        text: groovy.json.JsonOutput.toJson(data)
+                        text: groovy.json.JsonOutput.prettyPrint(
+                            groovy.json.JsonOutput.toJson(data)
+                        )
                     )
+
+                    echo 'File data.json berhasil dibuat'
                 }
 
                 sh '''
@@ -82,6 +122,7 @@ pipeline {
             }
 
             steps {
+                echo "Deploy dijalankan pada node: ${env.NODE_NAME}"
                 echo 'Start deploying...'
                 sleep 2
                 echo 'Deploy completed...'
@@ -94,6 +135,7 @@ pipeline {
             }
 
             steps {
+                echo "Release dijalankan pada node: ${env.NODE_NAME}"
                 echo 'Start releasing...'
                 sleep 2
                 echo 'Release completed...'
@@ -106,6 +148,7 @@ pipeline {
             }
 
             steps {
+                echo "Cleanup dijalankan pada node: ${env.NODE_NAME}"
                 echo 'Cleaning up 1...'
                 echo 'Cleaning up 2...'
             }
@@ -115,6 +158,7 @@ pipeline {
     post {
         always {
             echo 'This will always run'
+            echo "Status akhir: ${currentBuild.currentResult}"
         }
 
         success {
@@ -127,6 +171,14 @@ pipeline {
 
         aborted {
             echo 'Pipeline dihentikan'
+        }
+
+        unstable {
+            echo 'Pipeline selesai tetapi statusnya unstable'
+        }
+
+        changed {
+            echo 'Status pipeline berubah dari build sebelumnya'
         }
 
         cleanup {
