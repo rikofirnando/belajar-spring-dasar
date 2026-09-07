@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
-        PATH+JAVA = '/usr/lib/jvm/java-11-openjdk-amd64/bin'
+        PATH+JAVA = '/usr/lib/jvm/java-11-openjdk-amd64/bin:${env.PATH}'
     }
 
     options {
