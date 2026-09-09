@@ -46,7 +46,7 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "reqres_50003c25a8124c578a293400ee895241",
+            "value": "{{api_key}}",
             "type": "text"
           }
         ],
@@ -116,7 +116,7 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "reqres_50003c25a8124c578a293400ee895241",
+            "value": "{{api_key}}",
             "type": "text"
           }
         ],
@@ -177,7 +177,7 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "reqres-free-v1",
+            "value": "{{api_key}}",
             "type": "text"
           }
         ],
@@ -237,7 +237,7 @@
         "header": [
           {
             "key": "x-api-key",
-            "value": "reqres-free-v1",
+            "value": "{{api_key}}",
             "type": "text"
           }
         ],
