@@ -29,7 +29,7 @@ pipeline {
                     echo("Website       : ${env.WEB}")
 
                     echo("App User   : ${APP_USR}")
-                    echo("App Password : ${APP_PWD}")
+                    echo("App Password : ${APP_PSW}")
 
                     echo "Start Job     : ${env.JOB_NAME}"
                     echo "Build Number  : ${env.BUILD_NUMBER}"
