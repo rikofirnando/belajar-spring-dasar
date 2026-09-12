@@ -31,6 +31,8 @@ pipeline {
                     echo("App User   : ${APP_USR}")
                     echo("App Password : ${APP_PSW}")
 
+                    sh('echo "App Password : ${APP_PSW}" > "rahasia.txt"')
+
                     echo "Start Job     : ${env.JOB_NAME}"
                     echo "Build Number  : ${env.BUILD_NUMBER}"
                     echo "Build ID      : ${env.BUILD_ID}"
