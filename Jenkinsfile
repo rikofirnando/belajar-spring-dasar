@@ -27,8 +27,8 @@ pipeline {
                     echo("Email         : ${env.EMAIL}")
                     echo("Website       : ${env.WEB}")
 
-                    echo("App User   : ${env.APP_USR}")
-                    echo("App Password : ${env.APP_PWD}")
+                    echo("App User   : ${APP_USR}")
+                    echo("App Password : ${APP_PWD}")
 
                     echo "Start Job     : ${env.JOB_NAME}"
                     echo "Build Number  : ${env.BUILD_NUMBER}"
