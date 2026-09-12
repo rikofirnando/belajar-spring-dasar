@@ -2,6 +2,9 @@ pipeline {
     agent none
 
     environment {
+        AUTHOR = "Riko Firnando"
+        EMAIL = "riko.firnando@example.com"
+        WEB = "https://www.example.com"
         JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
     }
 
@@ -16,6 +19,10 @@ pipeline {
                     echo '========================================'
                     echo 'INFORMASI GLOBAL VARIABLE JENKINS'
                     echo '========================================'
+
+                    echo("Author        : ${env.AUTHOR}")
+                    echo("Email         : ${env.EMAIL}")
+                    echo("Website       : ${env.WEB}")
 
                     echo "Start Job     : ${env.JOB_NAME}"
                     echo "Build Number  : ${env.BUILD_NUMBER}"
