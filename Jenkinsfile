@@ -10,6 +10,9 @@ pipeline {
 
     stages {
         stage('Check Java') {
+            environment {
+                APP = credential("riko_rahasia")
+            }
             agent {
                 label 'jenkins-agent-01'
             }
@@ -23,6 +26,9 @@ pipeline {
                     echo("Author        : ${env.AUTHOR}")
                     echo("Email         : ${env.EMAIL}")
                     echo("Website       : ${env.WEB}")
+
+                    echo("App User   : ${env.APP_USR}")
+                    echo("App Password : ${env.APP_PWD}")
 
                     echo "Start Job     : ${env.JOB_NAME}"
                     echo "Build Number  : ${env.BUILD_NUMBER}"
