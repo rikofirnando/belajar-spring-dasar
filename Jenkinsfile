@@ -13,9 +13,9 @@ pipeline {
             agent {
                 label 'jenkins-agent-01'
             }
-            
+
             environment {
-                APP = credential("riko_rahasia")
+                APP = credentials("riko_rahasia")
             }
 
             steps {
