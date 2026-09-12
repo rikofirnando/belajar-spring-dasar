@@ -10,11 +10,12 @@ pipeline {
 
     stages {
         stage('Check Java') {
-            environment {
-                APP = credential("riko_rahasia")
-            }
             agent {
                 label 'jenkins-agent-01'
+            }
+            
+            environment {
+                APP = credential("riko_rahasia")
             }
 
             steps {
