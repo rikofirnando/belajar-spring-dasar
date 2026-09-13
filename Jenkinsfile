@@ -10,7 +10,7 @@ pipeline {
     }
 
     options {
-        // buildDiscarder(logRotator(numToKeepStr: '5'))
+        buildDiscarder(logRotator(numToKeepStr: '3'))
         disableConcurrentBuilds()
         timeout(time: 10, unit: 'MINUTES')
         timestamps()
@@ -35,7 +35,7 @@ pipeline {
                     echo("Author        : ${env.AUTHOR}")
                     echo("Email         : ${env.EMAIL}")
                     echo("Website       : ${env.WEB}")
-
+                    echo("Phone         : ${env.PHONE}")
                     echo("App User   : ${APP_USR}")
                     echo("App Password : ${APP_PSW}")
 
