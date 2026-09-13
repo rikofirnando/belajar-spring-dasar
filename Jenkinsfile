@@ -25,6 +25,20 @@ pipeline {
     }
 
     stages {
+        stage('Parameters') {
+            agent {
+                label 'jenkins-agent-01'
+            }
+
+            steps {
+                echo "Hello, ${params.NAME}!"
+                echo "Description: ${params.DESCRIPTION}"
+                echo "Deploy: ${params.DEPLOY}"
+                echo "Environment: ${params.ENVIRONMENT}"
+                echo "Secret: ${params.SECRET}"
+            }
+        }
+
         stage('Check Java') {
             agent {
                 label 'jenkins-agent-01'
