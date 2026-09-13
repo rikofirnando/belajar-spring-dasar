@@ -5,7 +5,15 @@ pipeline {
         AUTHOR = "Riko Firnando"
         EMAIL = "riko.firnando@example.com"
         WEB = "https://www.example.com"
+        PHONE = "+62 812-3456-7890"
         JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
+    }
+
+    options {
+        // buildDiscarder(logRotator(numToKeepStr: '5'))
+        disableConcurrentBuilds()
+        timeout(time: 10, unit: 'MINUTES')
+        timestamps()
     }
 
     stages {
