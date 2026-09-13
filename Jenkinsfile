@@ -2,7 +2,7 @@ pipeline {
     agent none
 
     environment {
-        AUTHOR = "Riko Firnando"
+        AUTHOR = "Riko Firnando 2"
         EMAIL = "riko.firnando@example.com"
         WEB = "https://www.example.com"
         PHONE = "+62 812-3456-7890"
