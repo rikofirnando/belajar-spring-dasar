@@ -9,6 +9,12 @@ pipeline {
         JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
     }
 
+    triggers {
+        cron('* * * * *')
+        // pollSCM('* * * * *')
+        // upstream('upstreamProjects: 'job1, job2', threshold: hudson.model.Result.SUCCESS)
+    }
+
     parameters {
         string(name: 'NAME', defaultValue: 'Guest', description: 'What is your name?')
         text(name: 'DESCRIPTION', defaultValue: '', description: 'Tell me about yourself')
