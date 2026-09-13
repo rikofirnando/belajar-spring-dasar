@@ -9,6 +9,14 @@ pipeline {
         JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
     }
 
+    parameters {
+        string(name: 'NAME', defaultValue: 'Guest', description: 'What is your name?')
+        text(name: 'DESCRIPTION', defaultValue: '', description: 'Tell me about yourself')
+        booleanParam(name: 'DEPLOY', defaultValue: false, description: 'Do you need to deploy now?')
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'qa / staging', 'prod'], description: 'Select the environment?')
+        password(name: 'SECRET', defaultValue: '', description: 'Encrypt your key')
+    }
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
         disableConcurrentBuilds()
